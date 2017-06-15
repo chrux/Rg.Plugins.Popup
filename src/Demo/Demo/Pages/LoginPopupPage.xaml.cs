@@ -31,6 +31,8 @@ namespace Demo.Pages
 
             UsernameEntry.TranslationX = PasswordEntry.TranslationX = -10;
             UsernameEntry.Opacity = PasswordEntry.Opacity = 0;
+
+            UsernameEntry.Next = PasswordEntry;
         }
 
         protected async override Task OnAppearingAnimationEnd()

@@ -1,4 +1,6 @@
-﻿﻿using CoreGraphics;
+﻿using System;
+using System.Threading.Tasks;
+using CoreGraphics;
 using Foundation;
 using Rg.Plugins.Popup.IOS.Renderers;
 using Rg.Plugins.Popup.Pages;
@@ -18,6 +20,7 @@ namespace Rg.Plugins.Popup.IOS.Renderers
         private NSObject _willChangeFrameNotificationObserver;
         private NSObject _willHideNotificationObserver;
         private CGRect _keyboardBounds;
+        private bool shouldHideKeyboard = true;
 
         private PopupPage _element
         {
@@ -120,6 +123,10 @@ namespace Rg.Plugins.Popup.IOS.Renderers
 
         private void KeyBoardUpNotification(NSNotification notifi)
         {
+            if (shouldHideKeyboard)
+            {
+                shouldHideKeyboard = false;
+            }
             _keyboardBounds = UIKeyboard.BoundsFromNotification(notifi);
             // With this piece of code we make sure if user uses a external
             // keyboard the space is not left blank
@@ -133,9 +140,21 @@ namespace Rg.Plugins.Popup.IOS.Renderers
 
         private void KeyBoardDownNotification(NSNotification notifi)
         {
-            _keyboardBounds = CGRect.Empty;
+            shouldHideKeyboard = true;
+            Task.Run(async () =>
+            {
+                await Task.Delay(TimeSpan.FromMilliseconds(62.5));
+                if (!shouldHideKeyboard)
+                {
+                    return;
+                }
+                _keyboardBounds = CGRect.Empty;
 
-            UpdateElementSize();
+                Device.BeginInvokeOnMainThread(() =>
+                {
+                    UpdateElementSize();
+                });
+            });
         }
 
         private bool IsAttachedToCurrentApplication()
