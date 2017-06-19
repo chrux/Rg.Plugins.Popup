@@ -86,31 +86,31 @@ namespace Rg.Plugins.Popup.IOS.Renderers
 
 		private void KeyBoardUpNotification(NSNotification notifi)
         {
-			if (shouldHideKeyboard)
-			{
-				shouldHideKeyboard = false;
-			}
+            if (shouldHideKeyboard)
+            {
+                shouldHideKeyboard = false;
+            }
 
-            _keyboardBounds = UIKeyboard.BoundsFromNotification(notifi);
+			_keyboardBounds = UIKeyboard.BoundsFromNotification(notifi);
 			// With this piece of code we make sure if user uses a external
 			// keyboard the space is not left blank
 			//// get the frame end user info key
 			var kbEndFrame = (notifi.UserInfo.ObjectForKey(UIKeyboard.FrameEndUserInfoKey) as NSValue).CGRectValue;
-            //// calculate the visible portion of the keyboard on the screen
-            System.Diagnostics.Debug.WriteLine(_keyboardBounds.Height);
-            var newKbHeight = UIScreen.MainScreen.Bounds.Height - kbEndFrame.Y;
-            if (newKbHeight != 0) {
-                _keyboardBounds.Height = newKbHeight;
-            }
-            //_keyboardBounds.Height = UIScreen.MainScreen.Bounds.Height - kbEndFrame.Y;
-            System.Diagnostics.Debug.WriteLine("--" + _keyboardBounds.Height);
+			//// calculate the visible portion of the keyboard on the screen
+			_keyboardBounds.Height = UIScreen.MainScreen.Bounds.Height - kbEndFrame.Y;
 
-			UpdateElementSize();
+            Task.Run(async () =>
+            {
+                await Task.Delay(TimeSpan.FromMilliseconds(62.5));
+                Device.BeginInvokeOnMainThread(() =>
+                {
+                    UpdateElementSize();
+                });
+            });
 		}
 
 		private void KeyBoardDownNotification(NSNotification notifi)
 		{
-            System.Diagnostics.Debug.WriteLine("KeyBoardDownNotification");
             shouldHideKeyboard = true;
 			Task.Run(async () =>
 			{
