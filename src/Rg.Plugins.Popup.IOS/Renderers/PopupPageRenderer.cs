@@ -66,7 +66,8 @@ namespace Rg.Plugins.Popup.IOS.Renderers
 		public override void ViewWillAppear(bool animated)
 		{
 			base.ViewWillAppear(animated);
-			NSNotificationCenter.DefaultCenter.AddObserver(UIKeyboard.WillChangeFrameNotification, KeyBoardUpNotification);
+			NSNotificationCenter.DefaultCenter.AddObserver(UIKeyboard.WillShowNotification, KeyBoardUpNotification);
+			//NSNotificationCenter.DefaultCenter.AddObserver(UIKeyboard.WillChangeFrameNotification, KeyBoardUpNotification);
 			NSNotificationCenter.DefaultCenter.AddObserver(UIKeyboard.WillHideNotification, KeyBoardDownNotification);
 		}
 
@@ -90,6 +91,10 @@ namespace Rg.Plugins.Popup.IOS.Renderers
             {
                 shouldHideKeyboard = false;
             }
+			if (_keyboardBounds.Height > 0)
+			{
+				return;
+			}
 
 			_keyboardBounds = UIKeyboard.BoundsFromNotification(notifi);
 			// With this piece of code we make sure if user uses a external
@@ -97,11 +102,11 @@ namespace Rg.Plugins.Popup.IOS.Renderers
 			//// get the frame end user info key
 			var kbEndFrame = (notifi.UserInfo.ObjectForKey(UIKeyboard.FrameEndUserInfoKey) as NSValue).CGRectValue;
 			//// calculate the visible portion of the keyboard on the screen
-			_keyboardBounds.Height = UIScreen.MainScreen.Bounds.Height - kbEndFrame.Y;
+			_keyboardBounds.Height = UIScreen.MainScreen.Bounds.Height - kbEndFrame.Y - 42;
 
             Task.Run(async () =>
             {
-                await Task.Delay(TimeSpan.FromMilliseconds(62.5));
+                await Task.Delay(TimeSpan.FromMilliseconds(125));
                 Device.BeginInvokeOnMainThread(() =>
                 {
                     UpdateElementSize();

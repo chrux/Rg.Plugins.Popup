@@ -6,15 +6,27 @@
              x:Class="Demo.Pages.SystemOffsetPage" 
              HasSystemPadding="{Binding IsSystemPadding}"
              Padding="{Binding Padding}">
+<ScrollView
+    HorizontalOptions="FillAndExpand"
+    VerticalOptions="FillAndExpand">
   <StackLayout VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" Padding="5,5,5,5" BackgroundColor="Red">
     <StackLayout BackgroundColor="White" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand">      
             <controls:EnhancedEntry
               HorizontalOptions="Center"
                 VerticalOptions="Center"
               x:Name="UsernameEntry"
-                Margin="0,300,0,0"
+                Margin="0,500,0,0"
+					Keyboard="Email"
               Placeholder="Username" />
+				<controls:EnhancedEntry
+              HorizontalOptions="Center"
+                VerticalOptions="Center"
+              x:Name="Password"
+                Margin="0,20,0,0"
+					IsPassword="true"
+              Placeholder="Password" />
             <Button Text="Close Popup" TextColor="Red" Clicked="OnClose" VerticalOptions="Center" HorizontalOptions="End"></Button>
     </StackLayout>
   </StackLayout>
+</ScrollView>
 </pages:PopupPage>
